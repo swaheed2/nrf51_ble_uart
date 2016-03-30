@@ -9,96 +9,99 @@
 
 double sizeOfRR = TOTAL_VALUES;
 double rrReadings[TOTAL_VALUES] = {
-516.1,
-580.3,
-646,
-580,
+709.4,
 710,
 645,
-645,
+774,
+452,
+839,
+451,
+710,
 645,
 581,
-581,
-645,
-580,
+709,
 646,
-645,
-645,
-707,
+709,
+516,
+711,
 710,
+710,
+640,
 650,
-770,
+710,
+640,
+580,
 780,
-640,
 710,
 710,
-580,
-650,
-580,
+710,
+710,
 640,
 580,
-520,
+650,
+710,
+710,
+710,
 640,
-520,
+710,
 650,
-510,
-580,
-710,
-710,
-840,
-770,
-840,
-780,
-770,
-650,
-710,
-770,
-710,
-580,
-580,
-580,
-650,
-580,
 640,
+710,
 650,
 510,
 710,
+650,
 710,
-520,
-710,
-770,
-710,
-840,
-710,
-840,
-770,
-710,
+640,
 580,
 650,
-580,
-650,
-640,
-650,
+710,
 640,
 710,
 650,
-770,
-770,
-910,
-510,
-780,
-770,
-650,
 640,
-650,
-640,
-520,
-520,
+460,
 700,
 650,
-770,
+710,
+640,
+590,
+640,
+450,
 780,
+580,
+510,
+580,
+580,
+710,
+710,
+650,
+770,
+710,
+650,
+510,
+650,
+640,
+710,
+780,
+710,
+640,
+710,
+710,
+580,
+710,
+710,
+710,
+650,
+640,
+650,
+710,
+580,
+580,
+640
 };
+
+ 
 
 
 inline static REAL sqr(REAL x) {
@@ -182,46 +185,55 @@ double getSTD2(double rrReadings[]) {
     return sum_deviation/sizeOfRR;  
 }
 
-double getStresScale(double a,double x,double y){
-	if(y < x){
-		if(a<=y){
+double getStressScale(double a,double x,double y){ 
+	if(x > y){
+		double com = ( (x-y)/4.0);
+		printf("%lf is greater than %lf\n",x,y);
+		if(a <= y + com){
+			printf("1a. Should return 0\n"); 
 			return 0.0;
 		}
-		else if(y <= a <= (y + (((x-y)/4)*1)) ){
-				return 0.0;
-		}
-		else if((y + (((x-y)/4)*1) ) <= a <= (y + (((x-y)/4)*2) ) ){
+		else if(((y + com) < a) && (a <= (y + (com*2)) ) ){ 
+			  printf("2a. Should return 5\n");
+			printf("2a. y + com: %lf , a: %lf,  (y + (com*2)): %lf",(y + com),a,(y + (com*2)));
 				return 5.0;
+		} 
+		else if((y + (com*2)) && (a <= (y + (com*3)) ) ){
+			  printf("3a. Should return 12\n");
+				return 25.0;
 		}
-		else if((y + (((x-y)/4)*2) ) <= a <= (y + (((x-y)/4)*3) ) ){
-				return 12.0;
-		}
-		else if(a > (y + (((x-y)/4)*3)) ){
+		else if(a > y + (com*3)){
+			  printf("4a. Should return 12\n");
 				return 25.0;
 		}
 		else {
+			printf("error\n");
 			return 0.0;
 		}  
 	}
-	else if(x < y) {
-		if(a<=x){
-			return 0.0;
+	else if(y > x) {
+		double com = ( (y-x)/4.0);
+		printf("%lf is greater than %lf\n",y,x);
+		if(a <= x + com){
+			printf("1b. Should return 0\n"); 
+			return 25.0;
 		}
-		else if(x <= a <= (x + (((y-x)/4)*1)) ){
-				return 0.0;
-		}
-		else if((x + (((y-x)/4)*1) ) <= a <= (x + (((y-x)/4)*2) ) ){
+		else if( (x + com < a) && (a <= (x + (com*2))) ){ 
+			  printf("2b. Should return 5\n");
+				return 12.0;
+		} 
+		else if( ((x + (com*2)) < a) && (a <= (x + (com*3))) ){ 
+			  printf("3b. Should return 12\n");
 				return 5.0;
 		}
-		else if((x + (((y-x)/4)*2) ) <= a <= (x + (((y-x)/4)*3) ) ){
-				return 12.0;
-		}
-		else if(a > (x + (((y-x)/4)*3)) ){
-				return 25.0;
+		else if(a > x + (com*3)){
+			  printf("4b. Should return 12\n");
+				return 0.0;
 		}
 		else {
+			printf("error\n");
 			return 0.0;
-		}
+		} 
 	}
 	else{
 		return 12.0;
