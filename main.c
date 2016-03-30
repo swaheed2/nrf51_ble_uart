@@ -22,6 +22,11 @@
  */
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <math.h>
+
+#include "stress_algo.h" 
+
 #include <string.h>
 #include "nordic_common.h"
 #include "nrf.h"
@@ -37,6 +42,9 @@
 #include "app_util_platform.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
+
+
+
  
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
@@ -89,7 +97,7 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
  */
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
-    printf("assert_nrf_callback %d in %s\n", __LINE__, __func__); 
+
 	  app_error_handler(DEAD_BEEF, line_num, p_file_name);
 }
 
@@ -101,7 +109,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
  */
 static void gap_params_init(void)
 {
-    printf("gap_params_init %d in %s\n", __LINE__, __func__); 
+
 	  uint32_t                err_code;
     ble_gap_conn_params_t   gap_conn_params;
     ble_gap_conn_sec_mode_t sec_mode;
@@ -137,7 +145,7 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    printf("nus_data_handler %d in %s\n", __LINE__, __func__);                          
+
 	  for (uint32_t i = 0; i < length; i++)
     {
         while(app_uart_put(p_data[i]) != NRF_SUCCESS);
@@ -151,7 +159,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
  */
 static void services_init(void)
 {
-    printf("services_init %d in %s\n", __LINE__, __func__); 
+
 	  uint32_t       err_code;
     ble_nus_init_t nus_init;
     
@@ -177,7 +185,7 @@ static void services_init(void)
  */
 static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 {
-    printf("on_conn_params_evt %d in %s\n", __LINE__, __func__); 
+
 	  uint32_t err_code;
     
     if(p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
@@ -194,7 +202,7 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
  */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
-   printf("conn_params_error_handler %d in %s\n", __LINE__, __func__); 
+
 	 APP_ERROR_HANDLER(nrf_error);
 }
 
@@ -203,7 +211,7 @@ static void conn_params_error_handler(uint32_t nrf_error)
  */
 static void conn_params_init(void)
 {
-    printf("conn_params_init %d in %s\n", __LINE__, __func__);
+
 	  uint32_t               err_code;
     ble_conn_params_init_t cp_init;
     
@@ -229,7 +237,7 @@ static void conn_params_init(void)
  */
 static void sleep_mode_enter(void)
 {
-    printf("sleep_mode_enter %d in %s\n", __LINE__, __func__);
+
 	  uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
     APP_ERROR_CHECK(err_code);
 
@@ -252,11 +260,11 @@ static void sleep_mode_enter(void)
 static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 {
     uint32_t err_code;
-		printf("on_adv_evt %d in %s\n", __LINE__, __func__);
+
     switch (ble_adv_evt)
     {
         case BLE_ADV_EVT_FAST:
-					  printf("BLE_ADV_EVT_FAST %d in %s\n", __LINE__, __func__);
+
             err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
             APP_ERROR_CHECK(err_code);
             break;
@@ -322,7 +330,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
     
-	  //printf("ble_evt_dispatch %d in %s\n", __LINE__, __func__);
+//"" 
 		ble_conn_params_on_ble_evt(p_ble_evt);
     ble_nus_on_ble_evt(&m_nus, p_ble_evt);
     on_ble_evt(p_ble_evt);
@@ -338,7 +346,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
  */
 static void ble_stack_init(void)
 {
-    printf("ble_stack_init %d in %s\n", __LINE__, __func__);
+//"" 
 	  uint32_t err_code;
     
     // Initialize SoftDevice.
@@ -392,7 +400,7 @@ void bsp_event_handler(bsp_event_t event)
             break;
 
         default:
-					  printf("bsp_event_handler %d in %s\n", __LINE__, __func__);
+
             break;
     }
 }
@@ -418,7 +426,7 @@ void uart_event_handle(app_uart_evt_t * p_event)
     {
         case APP_UART_DATA_READY: 
 						app_uart_put(test[0]);
-					  printf("APP_UART_DATA_READY %d in %s\n", __LINE__, __func__);
+					   
             UNUSED_VARIABLE(app_uart_get(&data_array[index]));
             index++; 
             if ((data_array[index - 1] == '\n') || (index >= (BLE_NUS_MAX_DATA_LEN)))
@@ -544,11 +552,7 @@ static void power_manage(void)
 static uint32_t send_data(uint8_t data[]){ 
 	 return ble_nus_string_send(&m_nus, data, 5);
 }	
- 
- 
-				 
- 
-
+   
 /**@brief Application main function.
  */
 int main(void)
@@ -572,6 +576,41 @@ int main(void)
     printf("%s",start_string); 
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST); 
     APP_ERROR_CHECK(err_code);
+	
+	
+	  printf("Start: \n\n"); 
+
+		//printf("LAST VALUE %lf\n", rrReadings[87]);
+		//printArray(rrReadings, 88);
+
+		//double p = getAverage(rrReadings,sizeOfRR );
+		//printf("ADNAN %lf", rrReadings[0]+1);
+		double a = 4.4;
+		
+		double rmssd = getRMSSD(rrReadings);
+		double rmssdScale = getStresScale(rmssd,89.3,125.37);
+		printf("RMSSD: %lf \n",rmssd);
+		printf("Stress Level: %lf \n\n",rmssdScale);
+		
+		double PNN50 = getPNN50(rrReadings);
+		double PNN50Scale = getStresScale(rmssd,89.3,125.37);
+		printf("PNN50: %lf \n",PNN50);
+		printf("Stress Level: %lf \n\n",getStresScale(PNN50,66.67,65.57));
+		
+		double STD1 = getSTD1(rrReadings);
+		double STD1Scale = getStresScale(rmssd,89.3,125.37);
+		printf("STD1:  %lf \n",STD1); 
+		printf("Stress Level: %lf \n\n",STD1Scale);
+		
+		double STD2 = sqrt(getSTD2(rrReadings));
+		double STD2Scale = getStresScale(rmssd,89.3,125.37);
+		printf("STD2:  %lf \n",STD2);
+		printf("Stress Level: %lf \n\n",STD2Scale);
+		
+		double finalStressLevel = rmssdScale + PNN50Scale + STD1Scale + STD2Scale;
+		printf("Final Stress Level: %lf \n\n",finalStressLevel);
+		
+		  
 		
 	  uint32_t err_code_test = 8; 
 		static const char *data[6];
@@ -591,15 +630,20 @@ int main(void)
 				if(dataCounter >= 6){
 					dataCounter = 0;
 				}
-				printf("Data: %s \n",data[dataCounter]); 
+				//printf("Data: %s \n",data[dataCounter]); 
 				test = ( unsigned char *) data[dataCounter] ;
-				printf("Test: %s \n",test);
+				//printf("Test: %s \n",test);
 				 
 				err_code_test = send_data(test);
 				timer = 1000000; 
 				dataCounter++;
 			}  
 		} 
+		
+		
+		
+		
+		
 		 
 	
  
@@ -610,6 +654,11 @@ int main(void)
         power_manage();
     }
 }
+
+
+
+
+ 
 
 
 /** 
