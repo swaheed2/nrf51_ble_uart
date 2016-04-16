@@ -24,9 +24,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
-
 #include "stress_algo.h" 
 
+
+#include <stdint.h>
 #include <string.h>
 #include "nordic_common.h"
 #include "nrf.h"
@@ -43,16 +44,15 @@
 #include "bsp.h"
 #include "bsp_btn_ble.h"
 
-
-
- 
-
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
 
-#define CENTRAL_LINK_COUNT              0                                           /**<number of central links used by the application. When changing this number remember to adjust the RAM settings*/
-#define PERIPHERAL_LINK_COUNT           1                                           /**<number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
+#define CENTRAL_LINK_COUNT              0                                           /**< Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
+#define PERIPHERAL_LINK_COUNT           1                                           /**< Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
 #define DEVICE_NAME                     "Fossil Watch"                               /**< Name of device. Will be included in the advertising data. */
+#define START_STRING                    "Start...\n"                                /**< The string that will be sent over the UART when the application starts. */
+
+
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
@@ -68,10 +68,6 @@
 #define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER)  /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000, APP_TIMER_PRESCALER) /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
 #define MAX_CONN_PARAMS_UPDATE_COUNT    3                                           /**< Number of attempts before giving up the connection parameter negotiation. */
-
-#define DATA_SEND_INTERVAL							APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER)  
-
-#define START_STRING                    "Start...\n"                                /**< The string that will be sent over the UART when the application starts. */
 
 #define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
@@ -97,8 +93,7 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
  */
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
-
-	  app_error_handler(DEAD_BEEF, line_num, p_file_name);
+    app_error_handler(DEAD_BEEF, line_num, p_file_name);
 }
 
 
@@ -109,8 +104,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
  */
 static void gap_params_init(void)
 {
-
-	  uint32_t                err_code;
+    uint32_t                err_code;
     ble_gap_conn_params_t   gap_conn_params;
     ble_gap_conn_sec_mode_t sec_mode;
 
@@ -145,8 +139,7 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-
-	  for (uint32_t i = 0; i < length; i++)
+    for (uint32_t i = 0; i < length; i++)
     {
         while(app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
@@ -159,8 +152,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
  */
 static void services_init(void)
 {
-
-	  uint32_t       err_code;
+    uint32_t       err_code;
     ble_nus_init_t nus_init;
     
     memset(&nus_init, 0, sizeof(nus_init));
@@ -185,8 +177,7 @@ static void services_init(void)
  */
 static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 {
-
-	  uint32_t err_code;
+    uint32_t err_code;
     
     if(p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
     {
@@ -202,8 +193,7 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
  */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
-
-	 APP_ERROR_HANDLER(nrf_error);
+    APP_ERROR_HANDLER(nrf_error);
 }
 
 
@@ -211,8 +201,7 @@ static void conn_params_error_handler(uint32_t nrf_error)
  */
 static void conn_params_init(void)
 {
-
-	  uint32_t               err_code;
+    uint32_t               err_code;
     ble_conn_params_init_t cp_init;
     
     memset(&cp_init, 0, sizeof(cp_init));
@@ -237,8 +226,7 @@ static void conn_params_init(void)
  */
 static void sleep_mode_enter(void)
 {
-
-	  uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
+    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
     APP_ERROR_CHECK(err_code);
 
     // Prepare wakeup buttons.
@@ -264,7 +252,6 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
     switch (ble_adv_evt)
     {
         case BLE_ADV_EVT_FAST:
-
             err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
             APP_ERROR_CHECK(err_code);
             break;
@@ -291,7 +278,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-				    printf("BLE_GAP_EVT_CONNECTED %d in %s\n", __LINE__, __func__);
             break;
             
         case BLE_GAP_EVT_DISCONNECTED:
@@ -329,9 +315,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
-    
-//"" 
-		ble_conn_params_on_ble_evt(p_ble_evt);
+    ble_conn_params_on_ble_evt(p_ble_evt);
     ble_nus_on_ble_evt(&m_nus, p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
@@ -346,11 +330,12 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
  */
 static void ble_stack_init(void)
 {
-//"" 
-	  uint32_t err_code;
+    uint32_t err_code;
+    
+    nrf_clock_lf_cfg_t clock_lf_cfg = NRF_CLOCK_LFCLKSRC;
     
     // Initialize SoftDevice.
-    SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_XTAL_20_PPM, NULL);
+    SOFTDEVICE_HANDLER_INIT(&clock_lf_cfg, NULL);
     
     ble_enable_params_t ble_enable_params;
     err_code = softdevice_enable_get_default_config(CENTRAL_LINK_COUNT,
@@ -400,7 +385,6 @@ void bsp_event_handler(bsp_event_t event)
             break;
 
         default:
-
             break;
     }
 }
@@ -419,16 +403,13 @@ void uart_event_handle(app_uart_evt_t * p_event)
     static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
     static uint8_t index = 0;
     uint32_t       err_code;
-	
-    static uint8_t test[1] = "a"; 
 
     switch (p_event->evt_type)
     {
-        case APP_UART_DATA_READY: 
-						app_uart_put(test[0]);
-					   
+        case APP_UART_DATA_READY:
             UNUSED_VARIABLE(app_uart_get(&data_array[index]));
-            index++; 
+            index++;
+
             if ((data_array[index - 1] == '\n') || (index >= (BLE_NUS_MAX_DATA_LEN)))
             {
                 err_code = ble_nus_string_send(&m_nus, data_array, index);
@@ -448,13 +429,9 @@ void uart_event_handle(app_uart_evt_t * p_event)
         case APP_UART_FIFO_ERROR:
             APP_ERROR_HANDLER(p_event->data.error_code);
             break;
-				
-				case APP_UART_TX_EMPTY: 
-					break;
+
         default:
             break;
-				
-				
     }
 }
 /**@snippet [Handling the data received over UART] */
@@ -472,9 +449,9 @@ static void uart_init(void)
         TX_PIN_NUMBER,
         RTS_PIN_NUMBER,
         CTS_PIN_NUMBER,
-        APP_UART_FLOW_CONTROL_DISABLED,
+        APP_UART_FLOW_CONTROL_ENABLED,
         false,
-        UART_BAUDRATE_BAUDRATE_Baud38400
+        UART_BAUDRATE_BAUDRATE_Baud115200
     };
 
     APP_UART_FIFO_INIT( &comm_params,
@@ -484,10 +461,6 @@ static void uart_init(void)
                        APP_IRQ_PRIORITY_LOW,
                        err_code);
     APP_ERROR_CHECK(err_code);
-		
-		static uint8_t data_array[1] = "a";
-		app_uart_put(data_array[0]);
-		 
 }
 /**@snippet [UART Initialization] */
 
@@ -548,11 +521,11 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
-  
+
 static uint32_t send_data(uint8_t data[]){ 
 	 return ble_nus_string_send(&m_nus, data, 5);
-}	
-   
+}
+
 /**@brief Application main function.
  */
 int main(void)
@@ -654,11 +627,6 @@ int main(void)
         power_manage();
     }
 }
-
-
-
-
- 
 
 
 /** 
