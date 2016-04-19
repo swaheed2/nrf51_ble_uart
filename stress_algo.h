@@ -2,14 +2,22 @@
 #define __STRESS_ALGO_H
  
 #define REAL double 
-#define TOTAL_VALUES 90
-extern double rrReadings[TOTAL_VALUES];
+#define TOTAL_VALUES 1001
+
+
+
+
+//extern double rrReadings[TOTAL_VALUES];
 extern double STD2;
+
 
 inline static REAL sqr(REAL x);
 
-
+double getHighestValue(int startIndex, int endIndex);
+void fillAverageArray();
  
+void peakDetect(int count);
+double * getRRValuesArr();
 
 double getRMSSD(double rrReadings[]);
 double getSTD1(double rrReadingsp[]);
