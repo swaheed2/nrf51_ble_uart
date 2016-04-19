@@ -558,25 +558,25 @@ int main(void)
 
 		//double p = getAverage(rrReadings,sizeOfRR );
 		//printf("ADNAN %lf", rrReadings[0]+1);
-		double a = 4.4;
+	 
 		
 		double rmssd = getRMSSD(rrReadings);
-		double rmssdScale = getStresScale(rmssd,89.3,125.37);
-		printf("RMSSD: %lf \n",rmssd);
+		double rmssdScale = getStressScale(rmssd,89.3,125.37); 
+		//printf("RMSSD: %lf \n",rmssd);
 		printf("Stress Level: %lf \n\n",rmssdScale);
 		
 		double PNN50 = getPNN50(rrReadings);
-		double PNN50Scale = getStresScale(rmssd,89.3,125.37);
+		double PNN50Scale = getStressScale(PNN50,89.3,125.37);
 		printf("PNN50: %lf \n",PNN50);
-		printf("Stress Level: %lf \n\n",getStresScale(PNN50,66.67,65.57));
+		printf("Stress Level: %lf \n\n",PNN50Scale);
 		
 		double STD1 = getSTD1(rrReadings);
-		double STD1Scale = getStresScale(rmssd,89.3,125.37);
+		double STD1Scale = getStressScale(STD1,89.3,125.37);
 		printf("STD1:  %lf \n",STD1); 
 		printf("Stress Level: %lf \n\n",STD1Scale);
 		
 		double STD2 = sqrt(getSTD2(rrReadings));
-		double STD2Scale = getStresScale(rmssd,89.3,125.37);
+		double STD2Scale = getStressScale(STD2,89.3,125.37);
 		printf("STD2:  %lf \n",STD2);
 		printf("Stress Level: %lf \n\n",STD2Scale);
 		
