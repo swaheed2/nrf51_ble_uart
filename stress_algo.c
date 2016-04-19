@@ -188,22 +188,21 @@ double getSTD2(double rrReadings[]) {
 double getStressScale(double a,double x,double y){ 
 	if(x > y){
 		double com = ( (x-y)/4.0);
-		printf("%lf is greater than %lf\n",x,y);
+		//printf("%lf is greater than %lf\n",x,y);
 		if(a <= y + com){
 			printf("1a. Should return 0\n"); 
 			return 0.0;
 		}
 		else if(((y + com) < a) && (a <= (y + (com*2)) ) ){ 
-			  printf("2a. Should return 5\n");
-			printf("2a. y + com: %lf , a: %lf,  (y + (com*2)): %lf",(y + com),a,(y + (com*2)));
+			  printf("2a. Should return 5\n"); 
 				return 5.0;
 		} 
 		else if((y + (com*2)) && (a <= (y + (com*3)) ) ){
 			  printf("3a. Should return 12\n");
-				return 25.0;
+				return 12.0;
 		}
 		else if(a > y + (com*3)){
-			  printf("4a. Should return 12\n");
+			  printf("4a. Should return 25\n");
 				return 25.0;
 		}
 		else {
@@ -213,21 +212,21 @@ double getStressScale(double a,double x,double y){
 	}
 	else if(y > x) {
 		double com = ( (y-x)/4.0);
-		printf("%lf is greater than %lf\n",y,x);
+		//printf("%lf is greater than %lf\n",y,x);
 		if(a <= x + com){
-			printf("1b. Should return 0\n"); 
-			return 25.0;
+			printf("1b. Should return 25\n"); 
+			return 25.0; 
 		}
 		else if( (x + com < a) && (a <= (x + (com*2))) ){ 
-			  printf("2b. Should return 5\n");
+			  printf("2b. Should return 12\n");
 				return 12.0;
 		} 
 		else if( ((x + (com*2)) < a) && (a <= (x + (com*3))) ){ 
-			  printf("3b. Should return 12\n");
+			  printf("3b. Should return 5\n");
 				return 5.0;
 		}
 		else if(a > x + (com*3)){
-			  printf("4b. Should return 12\n");
+			  printf("4b. Should return 0\n");
 				return 0.0;
 		}
 		else {
@@ -238,6 +237,7 @@ double getStressScale(double a,double x,double y){
 	else{
 		return 12.0;
 	}
+ 
 }
 
 int linreg(int n, const REAL x[], const REAL y[], REAL* m, REAL* b, REAL* r) {
