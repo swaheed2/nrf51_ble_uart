@@ -2,7 +2,7 @@
 #define __STRESS_ALGO_H
  
 #define REAL double 
-#define TOTAL_VALUES 89	
+#define TOTAL_VALUES 90
 extern double rrReadings[TOTAL_VALUES];
 extern double STD2;
 
@@ -17,7 +17,7 @@ double getSTD2(double rrReadingsp[]);
 double getPNN50(double rrReadings[]);
 
 
-double getStresScale(double reading,double x,double y);
+double getStressScale(double reading,double x,double y);
 
 
 int linreg(int n, const REAL x[], const REAL y[], REAL* m, REAL* b, REAL* r);
