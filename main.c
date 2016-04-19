@@ -400,7 +400,8 @@ void bsp_event_handler(bsp_event_t event)
 /**@snippet [Handling the data received over UART] */
 void uart_event_handle(app_uart_evt_t * p_event)
 {
-    static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
+    
+		static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
     static uint8_t index = 0;
     uint32_t       err_code;
 
@@ -522,8 +523,10 @@ static void power_manage(void)
 }
 
 
-static uint32_t send_data(uint8_t data[]){ 
-	 return ble_nus_string_send(&m_nus, data, 5);
+static uint32_t send_data(double a){  
+	 char buf[50];
+	 sprintf(buf,"%.0f",a);
+	 return ble_nus_string_send(&m_nus, (uint8_t*)buf,2);
 }
 
 /**@brief Application main function.
@@ -552,19 +555,20 @@ int main(void)
 	
 	
 	  printf("Start: \n\n"); 
-
-		//printf("LAST VALUE %lf\n", rrReadings[87]);
-		//printArray(rrReadings, 88);
-
-		//double p = getAverage(rrReadings,sizeOfRR );
-		//printf("ADNAN %lf", rrReadings[0]+1);
-	 
+		fillAverageArray();
+		//Begin peak detection
+		peakDetect(1);
+		peakDetect(0);
+		double *rrReadings;
+    rrReadings = getRRValuesArr();
+		
+		
 		
 		double rmssd = getRMSSD(rrReadings);
 		double rmssdScale = getStressScale(rmssd,89.3,125.37); 
 		//printf("RMSSD: %lf \n",rmssd);
 		printf("Stress Level: %lf \n\n",rmssdScale);
-		
+//		
 		double PNN50 = getPNN50(rrReadings);
 		double PNN50Scale = getStressScale(PNN50,89.3,125.37);
 		printf("PNN50: %lf \n",PNN50);
@@ -582,44 +586,32 @@ int main(void)
 		
 		double finalStressLevel = rmssdScale + PNN50Scale + STD1Scale + STD2Scale;
 		printf("Final Stress Level: %lf \n\n",finalStressLevel);
+	
+//		uint8_t* p = (uint8_t*)&finalStressLevel; 
+//		printf("p: %d \n",*p);  
+		 
+//		uint32_t err_code_test = 8;  
+//		while(err_code_test != 0){
+//			err_code_test = send_data(finalStressLevel);
+//			printf("Error Code: %u \n",err_code_test); 
+//		}
 		
-		  
 		
-	  uint32_t err_code_test = 8; 
-		static const char *data[6];
-		data[0] = "90";
-		data[1] = "50";
-		data[2] = "20";
-		data[3] = "67";
-		data[4] = "85";
-		data[5] = "24";
+		   
+		 
 		 
 		int dataCounter = 0;
 	  int timer = 1000000;
 	  while(true){ 
 			timer--;
-			if(timer == 0){     
-				static uint8_t *test; 
-				if(dataCounter >= 6){
-					dataCounter = 0;
-				}
-				//printf("Data: %s \n",data[dataCounter]); 
-				test = ( unsigned char *) data[dataCounter] ;
-				//printf("Test: %s \n",test);
-				 
-				err_code_test = send_data(test);
+			if(timer == 0){      
+				static uint8_t *test;  
+				send_data(finalStressLevel); 
 				timer = 1000000; 
 				dataCounter++;
 			}  
 		} 
-		
-		
-		
-		
-		
 		 
-	
- 
     
     // Enter main loop.
     for (;;)
