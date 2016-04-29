@@ -529,6 +529,25 @@ static uint32_t send_data(double a){
 	 return ble_nus_string_send(&m_nus, (uint8_t*)buf,2);
 }
 
+void readFile(){
+	printf("trying to read file");
+	char buff[1000]; 
+
+	FILE *fp;
+	fp = fopen("better_data.txt", "r");
+
+	int i = 1;
+	while (fgets(buff, 1000, fp)) {
+
+		char *token;
+		double parsed = atof(buff);
+		printf("print: %lf" , parsed);
+		i++;
+
+	}
+	printf("done reading file");
+}
+
 /**@brief Application main function.
  */
 int main(void)
@@ -555,15 +574,19 @@ int main(void)
 	
 	
 	  printf("Start: \n\n"); 
+		
+		
+		//readFile();
+
+		
+		
 		fillAverageArray();
 		//Begin peak detection
 		peakDetect(1);
 		peakDetect(0);
 		double *rrReadings;
     rrReadings = getRRValuesArr();
-		
-		
-		
+		 
 		double rmssd = getRMSSD(rrReadings);
 		double rmssdScale = getStressScale(rmssd,89.3,125.37); 
 		//printf("RMSSD: %lf \n",rmssd);
@@ -574,31 +597,19 @@ int main(void)
 		printf("PNN50: %lf \n",PNN50);
 		printf("Stress Level: %lf \n\n",PNN50Scale);
 		
-		double STD1 = getSTD1(rrReadings);
-		double STD1Scale = getStressScale(STD1,89.3,125.37);
-		printf("STD1:  %lf \n",STD1); 
-		printf("Stress Level: %lf \n\n",STD1Scale);
+		double SD1 = getSD1(rrReadings);
+		double SD1Scale = getStressScale(SD1,89.3,125.37);
+		printf("SD1:  %lf \n",SD1); 
+		printf("Stress Level: %lf \n\n",SD1Scale);
 		
-		double STD2 = sqrt(getSTD2(rrReadings));
-		double STD2Scale = getStressScale(STD2,89.3,125.37);
-		printf("STD2:  %lf \n",STD2);
-		printf("Stress Level: %lf \n\n",STD2Scale);
+		double SD2 = getSD2(rrReadings);
+		double SD2Scale = getStressScale(SD2,89.3,125.37);
+		printf("SD2:  %lf \n",SD2);
+		printf("Stress Level: %lf \n\n",SD2Scale);
 		
-		double finalStressLevel = rmssdScale + PNN50Scale + STD1Scale + STD2Scale;
+		double finalStressLevel = rmssdScale + PNN50Scale + SD1Scale + SD2Scale;
 		printf("Final Stress Level: %lf \n\n",finalStressLevel);
-	
-//		uint8_t* p = (uint8_t*)&finalStressLevel; 
-//		printf("p: %d \n",*p);  
-		 
-//		uint32_t err_code_test = 8;  
-//		while(err_code_test != 0){
-//			err_code_test = send_data(finalStressLevel);
-//			printf("Error Code: %u \n",err_code_test); 
-//		}
-		
-		
-		   
-		 
+ 
 		 
 		int dataCounter = 0;
 	  int timer = 1000000;
