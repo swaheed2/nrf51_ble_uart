@@ -12,17 +12,15 @@
 #define TOTAL_VALUES 1001
 
 
-
-
 //extern double rrReadings[TOTAL_VALUES];
 extern double SD2;
 
 
-inline static REAL sqr(REAL x);
-
 double getHighestValue(int startIndex, int endIndex);
 void fillAverageArray();
 
+
+void thresholdCalc();
 void peakDetect(int count);
 double * getRRValuesArr();
 
